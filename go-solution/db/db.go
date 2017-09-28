@@ -28,18 +28,19 @@ func NewDB(dbPath string) (*DB, error) {
 	return &DB{db}, nil
 }
 
-func (db *DB) Tx(ctx context.Context, f func(tx *sql.Tx) error) error {
+// Tx runs the function f in a transaction that is commited if err is nil, else it will roll back
+func (db *DB) Tx(ctx context.Context, f func(ctx context.Context, tx *sql.Tx) error) error {
 	return transact(ctx, db.DB, f)
 }
 
 // transact is a helper function for managing transactions
-func transact(ctx context.Context, db *sql.DB, f func(tx *sql.Tx) error) error {
+func transact(ctx context.Context, db *sql.DB, f func(ctx context.Context, tx *sql.Tx) error) error {
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
 
-	err = f(tx)
+	err = f(ctx, tx)
 	if err != nil {
 		tx.Rollback()
 	} else {
