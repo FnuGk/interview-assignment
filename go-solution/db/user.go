@@ -58,7 +58,7 @@ func (db *UserDB) GetAll(ctx context.Context, tx *sql.Tx) ([]*model.User, error)
 	return db.GetByQuery(ctx, tx, q)
 }
 
-// GetByQuery allows running arbitary sql commands returning Users
+// GetByQuery allows running arbitrary sql commands returning Users
 func (db *UserDB) GetByQuery(ctx context.Context, tx *sql.Tx, q string) ([]*model.User, error) {
 	rows, err := tx.QueryContext(ctx, q)
 	if err != nil {
