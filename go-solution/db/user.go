@@ -27,7 +27,7 @@ func NewUserDB(db *DB) *UserDB {
 // DeleteByID deletes the user by the given id
 func (db *UserDB) DeleteByID(ctx context.Context, tx *sql.Tx, id string) error {
 	q := `
-		DELETE FROM useres
+		DELETE FROM users
 		WHERE id=?
 	`
 
