@@ -16,7 +16,7 @@ type IUserDB interface {
 
 // UserDB abstracts the users table
 type UserDB struct {
-	*DB
+	db *DB
 }
 
 // NewUserDB creates a new UserDB
