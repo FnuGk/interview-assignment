@@ -3,11 +3,11 @@
 This is a simple solution for the problem of reading user data
 from a sqlite3 database and store it in a plain JSON file written in GO.
 
-A bonus bash solution can be found in the aptly named `bonus-bash-solution.sh`. This is just an example of the most simple and pragmatic solution made just for fun.
-
 The application can be build by running `go build` or run without building simply by calling `go run main.go`. run with the `--help` flag to see how to run, or see `run.sh`
 
 The database can be created by running `cat ../sqldump.sql | sqlite3 test.db` from this directory. This will create a database called `test.db`.
+
+A bonus bash solution can be found in the aptly named `bonus-bash-solution.sh`. This is just an example of the most simple and pragmatic solution made just for fun.
 
 ## Architecture
 The system is split into sub packages for each logic domain.
