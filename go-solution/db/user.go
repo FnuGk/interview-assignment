@@ -47,3 +47,29 @@ func (db *UserDB) DeleteByID(ctx context.Context, tx *sql.Tx, id string) error {
 	}
 	return nil
 }
+
+// GetAll returns a list of all users
+func (db *UserDB) GetAll(ctx context.Context, tx *sql.Tx) ([]*model.User, error) {
+	q := `
+		SELECT id, firstName, lastName, email
+		FROM users
+	`
+
+	rows, err := tx.QueryContext(ctx, q)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not GetAll users")
+	}
+	defer rows.Close()
+
+	users := []*model.User{}
+	for rows.Next() {
+		var usr model.User
+		err := rows.Scan(&usr.ID, &usr.FirstName, &usr.LastName, &usr.Email)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not scan user row")
+		}
+		users = append(users, &usr)
+	}
+
+	return users, rows.Err()
+}
