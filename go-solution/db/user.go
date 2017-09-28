@@ -12,6 +12,7 @@ import (
 type IUserDB interface {
 	DeleteByID(ctx context.Context, tx *sql.Tx, id string) error
 	GetAll(ctx context.Context, tx *sql.Tx) ([]*model.User, error)
+	GetByQuery(ctx context.Context, tx *sql.Tx, q string) ([]*model.User, error)
 }
 
 // UserDB abstracts the users table
@@ -54,10 +55,14 @@ func (db *UserDB) GetAll(ctx context.Context, tx *sql.Tx) ([]*model.User, error)
 		SELECT id, firstName, lastName, email
 		FROM users
 	`
+	return db.GetByQuery(ctx, tx, q)
+}
 
+// GetByQuery allows
+func (db *UserDB) GetByQuery(ctx context.Context, tx *sql.Tx, q string) ([]*model.User, error) {
 	rows, err := tx.QueryContext(ctx, q)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not GetAll users")
+		return nil, errors.Wrapf(err, "could not get users, select query must take the form %#v", "SELECT id, firstName, lastName, email ....")
 	}
 	defer rows.Close()
 
