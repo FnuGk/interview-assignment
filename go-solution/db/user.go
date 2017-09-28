@@ -2,14 +2,15 @@ package db
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/fnugk/interview-assignment/go-solution/model"
 )
 
 // IUserDB exposes all functionality of a UserDB
 type IUserDB interface {
-	DeleteByID(ctx context.Context, id string) error
-	GetAll(ctx context.Context) ([]*model.User, error)
+	DeleteByID(ctx context.Context, tx *sql.Tx, id string) error
+	GetAll(ctx context.Context, tx *sql.Tx) ([]*model.User, error)
 }
 
 // UserDB abstracts the users table
