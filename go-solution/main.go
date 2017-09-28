@@ -79,5 +79,21 @@ func writeAndVerify(content []byte, fPath string) error {
 	if n != len(content) {
 		return errors.Errorf("only wrote %d/%d bytes", n, len(content))
 	}
+
+	// Now to make completely sure that the content are written
+
+	if err := f.Sync(); err != nil {
+		return errors.Errorf("could not sync %#v", fPath)
+	}
+
+	fi, err := f.Stat()
+	if err != nil {
+		return errors.Errorf("could not stat %#v", fPath)
+	}
+
+	if fi.Size() != int64(len(content)) {
+		return errors.Errorf("only wrote %d/%d bytes after sync", n, len(content))
+	}
+
 	return nil
 }
