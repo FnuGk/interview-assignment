@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -14,16 +15,19 @@ import (
 )
 
 var (
-	dbPath    = "./test.db"
-	outFolder = "./out"
+	dbPath    = flag.String("dbPath", "./test.db", "path to the sqlite3 db")
+	outFolder = flag.String("output", "./out", "path to the folder where output is stored")
+	query     = flag.String("query", "SELECT id,firstName,lastName,email FROM users", "the sql query to run. MUST start with SELECT id,firstName,lastName,email FROM...")
 )
 
 func main() {
-	if err := os.MkdirAll(outFolder, os.ModePerm); err != nil {
+	flag.Parse()
+
+	if err := os.MkdirAll(*outFolder, os.ModePerm); err != nil {
 		log.Fatal(err)
 	}
 
-	dbConn, err := db.NewDB(dbPath)
+	dbConn, err := db.NewDB(*dbPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,7 +35,7 @@ func main() {
 
 	ctx := context.Background()
 	err = dbConn.Tx(ctx, func(ctx context.Context, tx *sql.Tx) error {
-		users, err := userDB.GetAll(ctx, tx)
+		users, err := userDB.GetByQuery(ctx, tx, *query)
 		if err != nil {
 			return err
 		}
@@ -42,7 +46,7 @@ func main() {
 				return errors.Wrapf(err, "could marshal %v", u)
 			}
 			fileName := fmt.Sprintf("user-%d.json", i)
-			err = writeAndVerify(buf, path.Join(outFolder, fileName))
+			err = writeAndVerify(buf, path.Join(*outFolder, fileName))
 			if err != nil {
 				return err
 			}
