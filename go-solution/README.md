@@ -5,6 +5,8 @@ from a sqlite3 database and store it in a plain JSON file written in GO.
 
 The application can be build by running `go build` or run without building simply by calling `go run main.go`. run with the `--help` flag to see how to run, or see `run.sh`
 
+The database can be created by running `cat ../sqldump.sql | sqlite3 test.db` from this directory. This will create a database called `test.db`.
+
 ## Architecture
 The system is split into sub packages for each logic domain.
 The db package abstracts access to the database. 
